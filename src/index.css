@@ -282,22 +282,173 @@ textarea:focus {
   .brand-name {
     font-size: 1.1rem;
   }
+
+  .header p {
+    font-size: 0.95rem;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .section {
+    padding: 20px 15px;
+  }
   
   .form-row {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
-  
-  .button-row {
-    flex-direction: column;
+
+  .form-col label {
+    font-size: 0.85rem;
+  }
+
+  .section input[type="text"],
+  .section input[type="number"],
+  .section select {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .add-btn {
+    font-size: 0.95rem;
+    padding: 12px 20px;
+  }
+
+  .color-preset {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  .platform-chips {
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .chip-username {
+    font-size: 0.8rem;
+  }
+
+  .chip-streak {
+    font-size: 0.85rem;
+  }
+
+  .chip button {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
   }
   
   .streak-summary {
     grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .streak-stat {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .preview {
+    padding: 15px;
+  }
+
+  .preview img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  textarea {
+    font-size: 0.8rem;
+    padding: 12px;
+  }
+
+  .copy-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .section h3 {
+    font-size: 1.1rem;
+  }
+
+  .hint {
+    font-size: 0.85rem;
+  }
+
+  .section ol {
+    padding-left: 15px;
+    font-size: 0.9rem;
+  }
+
+  .section ol li {
+    margin-bottom: 8px;
   }
 
   .github-btn {
     font-size: 0.9rem;
     padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
+
+  .section {
+    padding: 15px 12px;
+  }
+
+  .section h3 {
+    font-size: 1rem;
+  }
+
+  .add-btn {
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+
+  .color-preset {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .chip {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+
+  .github-btn {
+    font-size: 0.85rem;
+    padding: 8px 16px;
   }
 }
 

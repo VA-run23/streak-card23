@@ -73,10 +73,11 @@ export default function handler(req, res) {
     Math.max(0, baseRgb.b - 30)
   );
 
-  const cardWidth = 600;
+  // Dynamic width based on number of platforms
+  const tabsPerRow = Math.min(4, platformList.length);
+  const cardWidth = Math.max(300, 20 + (tabsPerRow * 140));
   const headerHeight = showHeader ? 100 : 0;
   const tabHeight = 55;
-  const tabsPerRow = 4;
   const rows = Math.ceil(platformList.length / tabsPerRow);
   const tabsHeight = rows * tabHeight + 20;
   const cardHeight = headerHeight + tabsHeight;
@@ -110,9 +111,8 @@ export default function handler(req, res) {
   const headerSvg = showHeader ? `
     <rect width="${cardWidth}" height="${headerHeight}" fill="url(#bgGrad)" rx="12"/>
     <rect y="12" width="${cardWidth}" height="${headerHeight - 12}" fill="url(#bgGrad)"/>
-    
-    <text x="30" y="38" fill="white" font-size="32" font-weight="bold">${name}</text>
-    <text x="30" y="65" fill="white" font-size="15" opacity="0.95">${greeting}</text>
+    ${name.trim() !== '' ? `<text x="30" y="38" fill="white" font-size="32" font-weight="bold">${name}</text>` : ''}
+    ${greeting.trim() !== '' ? `<text x="30" y="${name.trim() !== '' ? '65' : '50'}" fill="white" font-size="15" opacity="0.95">${greeting}</text>` : ''}
   ` : '';
 
   const svg = `
