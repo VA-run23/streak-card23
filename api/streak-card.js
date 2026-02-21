@@ -17,7 +17,7 @@ function getPlatformUrl(platform, username) {
 }
 
 export default function handler(req, res) {
-  const { platforms, name = 'User', greeting = 'greets you with Namaste 🙏', color = '#FF8C42' } = req.query;
+  const { platforms, name = '', greeting = '', color = '#FF8C42' } = req.query;
   
   if (!platforms) {
     return res.status(400).json({ error: 'Platforms parameter required' });
@@ -40,6 +40,9 @@ export default function handler(req, res) {
     hackerrank: 'HackerRank',
     geeksforgeeks: 'GFG'
   };
+
+  // Check if header should be shown
+  const showHeader = name.trim() !== '' || greeting.trim() !== '';
 
   // Generate lighter and darker shades from the base color
   const hexToRgb = (hex) => {
@@ -71,7 +74,7 @@ export default function handler(req, res) {
   );
 
   const cardWidth = 600;
-  const headerHeight = 100;
+  const headerHeight = showHeader ? 100 : 0;
   const tabHeight = 55;
   const tabsPerRow = 4;
   const rows = Math.ceil(platformList.length / tabsPerRow);
@@ -104,6 +107,14 @@ export default function handler(req, res) {
     `;
   });
 
+  const headerSvg = showHeader ? `
+    <rect width="${cardWidth}" height="${headerHeight}" fill="url(#bgGrad)" rx="12"/>
+    <rect y="12" width="${cardWidth}" height="${headerHeight - 12}" fill="url(#bgGrad)"/>
+    
+    <text x="30" y="38" fill="white" font-size="32" font-weight="bold">${name}</text>
+    <text x="30" y="65" fill="white" font-size="15" opacity="0.95">${greeting}</text>
+  ` : '';
+
   const svg = `
     <svg width="${cardWidth}" height="${cardHeight}" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -122,11 +133,7 @@ export default function handler(req, res) {
       <rect width="${cardWidth}" height="${cardHeight}" fill="#FFF5EB" rx="12"/>
       <rect width="${cardWidth}" height="${cardHeight}" fill="none" stroke="${lighterColor}" stroke-width="3" rx="12"/>
       
-      <rect width="${cardWidth}" height="${headerHeight}" fill="url(#bgGrad)" rx="12"/>
-      <rect y="12" width="${cardWidth}" height="${headerHeight - 12}" fill="url(#bgGrad)"/>
-      
-      <text x="30" y="38" fill="white" font-size="32" font-weight="bold">${name}</text>
-      <text x="30" y="65" fill="white" font-size="15" opacity="0.95">${greeting}</text>
+      ${headerSvg}
       
       ${tabsHtml}
     </svg>
