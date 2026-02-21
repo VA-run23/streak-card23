@@ -201,7 +201,7 @@ app.get('/api/fetch-streak/:platform/:username', async (req, res) => {
 });
 
 app.get('/api/streak-card', (req, res) => {
-  const { platforms, name = 'User' } = req.query;
+  const { platforms, name = 'User', greeting = 'greets you with Namaste 🙏', color = '#FF8C42' } = req.query;
   
   if (!platforms) {
     return res.status(400).json({ error: 'Platforms parameter required' });
@@ -209,29 +209,13 @@ app.get('/api/streak-card', (req, res) => {
 
   const platformList = JSON.parse(decodeURIComponent(platforms));
   
-  const platformIconMap = {
-    gfg: '🔥',
-    geeksforgeeks: '🔥',
-    weather: '☁️',
-    github: '💻',
-    'leetcode-potd': '🔥',
-    'leetcode-submissions': '💡',
-    leetcode: '💡',
-    unstop: '🚀',
-    microsoft: '🎁',
-    puzzles: '🧩',
-    codechef: '👨‍🍳',
-    codeforces: '🏆',
-    hackerrank: '🎯'
-  };
-
   const platformNameMap = {
     gfg: 'GFG',
     geeksforgeeks: 'GFG',
     weather: 'Weather',
     github: 'GitHub',
-    'leetcode-potd': 'LC POTD',
-    'leetcode-submissions': 'LC Subs',
+    'leetcode-potd': 'LeetCode POTD',
+    'leetcode-submissions': 'LeetCode',
     leetcode: 'LeetCode',
     unstop: 'Unstop',
     microsoft: 'Microsoft',
@@ -241,9 +225,38 @@ app.get('/api/streak-card', (req, res) => {
     hackerrank: 'HackerRank'
   };
 
+  // Generate lighter and darker shades from the base color
+  const hexToRgb = (hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 140, b: 66 };
+  };
+
+  const rgbToHex = (r, g, b) => {
+    return "#" + [r, g, b].map(x => {
+      const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    }).join('');
+  };
+
+  const baseRgb = hexToRgb(color);
+  const lighterColor = rgbToHex(
+    Math.min(255, baseRgb.r + 40),
+    Math.min(255, baseRgb.g + 40),
+    Math.min(255, baseRgb.b + 40)
+  );
+  const darkerColor = rgbToHex(
+    Math.max(0, baseRgb.r - 30),
+    Math.max(0, baseRgb.g - 30),
+    Math.max(0, baseRgb.b - 30)
+  );
+
   const cardWidth = 600;
-  const headerHeight = 120;
-  const tabHeight = 50;
+  const headerHeight = 100;
+  const tabHeight = 55;
   const tabsPerRow = 4;
   const rowCount = Math.ceil(platformList.length / tabsPerRow);
   const tabsHeight = rowCount * tabHeight + 20;
@@ -258,16 +271,16 @@ app.get('/api/streak-card', (req, res) => {
     const streakValue = platform.streak || 0;
     const usernameValue = platform.username || 'user';
     const platformUrl = getPlatformUrl(platform.platform, usernameValue);
+    const platformName = platformNameMap[platform.platform] || platform.platform.toUpperCase();
 
     tabsHtml += `
       <a href="${platformUrl}" target="_blank" rel="noopener noreferrer">
-        <g class="tab" style="cursor: pointer;">
-          <rect x="${xPos}" y="${yPos}" width="130" height="40" fill="#FF8C42" rx="8" opacity="0.9"/>
-          <text x="${xPos + 10}" y="${yPos + 18}" font-size="16">${platformIconMap[platform.platform] || '�'}</text>
-          <text x="${xPos + 35}" y="${yPos + 18}" fill="white" font-size="12" font-weight="600">
-            ${platformNameMap[platform.platform] || platform.platform.toUpperCase()}
+        <g class="tab">
+          <rect x="${xPos}" y="${yPos}" width="130" height="45" fill="${color}" rx="8" opacity="0.95"/>
+          <text x="${xPos + 10}" y="${yPos + 20}" fill="white" font-size="13" font-weight="600">
+            ${platformName}
           </text>
-          <text x="${xPos + 10}" y="${yPos + 33}" fill="white" font-size="14" font-weight="700">
+          <text x="${xPos + 10}" y="${yPos + 36}" fill="white" font-size="18" font-weight="700">
             ${streakValue} days 🔥
           </text>
         </g>
@@ -279,34 +292,27 @@ app.get('/api/streak-card', (req, res) => {
     <svg width="${cardWidth}" height="${cardHeight}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#FFB347;stop-opacity:1" />
-          <stop offset="50%" style="stop-color:#FF8C42;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+          <stop offset="0%" style="stop-color:${lighterColor};stop-opacity:1" />
+          <stop offset="50%" style="stop-color:${color};stop-opacity:1" />
+          <stop offset="100%" style="stop-color:${darkerColor};stop-opacity:1" />
         </linearGradient>
         <style>
-          .tab { transition: opacity 0.3s; }
+          .tab { transition: opacity 0.3s; cursor: pointer; }
           .tab:hover rect { opacity: 1 !important; }
           a { cursor: pointer; }
         </style>
       </defs>
       
       <rect width="${cardWidth}" height="${cardHeight}" fill="#FFF5EB" rx="12"/>
-      <rect width="${cardWidth}" height="${cardHeight}" fill="none" stroke="#FFB347" stroke-width="3" rx="12"/>
+      <rect width="${cardWidth}" height="${cardHeight}" fill="none" stroke="${lighterColor}" stroke-width="3" rx="12"/>
       
       <rect width="${cardWidth}" height="${headerHeight}" fill="url(#bgGrad)" rx="12"/>
       <rect y="12" width="${cardWidth}" height="${headerHeight - 12}" fill="url(#bgGrad)"/>
       
-      <text x="30" y="40" fill="white" font-size="28" font-weight="bold">${name}</text>
-      <text x="30" y="65" fill="white" font-size="14" opacity="0.95">greets you with Namaste 🙏</text>
-      <text x="30" y="90" fill="white" font-size="12" opacity="0.9" font-style="italic">
-        Tracking daily streaks across platforms for career &amp; professional growth
-      </text>
+      <text x="30" y="38" fill="white" font-size="32" font-weight="bold">${name}</text>
+      <text x="30" y="65" fill="white" font-size="15" opacity="0.95">${greeting}</text>
       
       ${tabsHtml}
-      
-      <text x="${cardWidth / 2}" y="${cardHeight - 10}" fill="#FF8C42" font-size="10" text-anchor="middle" opacity="0.7">
-        Click any platform to verify streak details
-      </text>
     </svg>
   `;
   

@@ -14,11 +14,13 @@ const platforms = [
 ];
 
 function App() {
-  const [name, setName] = useState('VARUN D MAGAR');
+  const [name, setName] = useState('VA-run23');
+  const [greeting, setGreeting] = useState('greets you with Namaste 🙏');
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [currentPlatform, setCurrentPlatform] = useState('github');
   const [currentUsername, setCurrentUsername] = useState('');
   const [fetching, setFetching] = useState(false);
+  const [cardColor, setCardColor] = useState('#FF8C42'); // Default orange
 
   const addPlatform = async () => {
     if (!currentUsername.trim()) {
@@ -68,13 +70,13 @@ function App() {
 
   const getCardUrl = () => {
     const encodedPlatforms = encodeURIComponent(JSON.stringify(selectedPlatforms));
-    return `/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}`;
+    return `/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}&greeting=${encodeURIComponent(greeting)}&color=${encodeURIComponent(cardColor)}`;
   };
 
   const getFullCardUrl = () => {
     const encodedPlatforms = encodeURIComponent(JSON.stringify(selectedPlatforms));
     const baseUrl = window.location.origin;
-    return `${baseUrl}/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}`;
+    return `${baseUrl}/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}&greeting=${encodeURIComponent(greeting)}&color=${encodeURIComponent(cardColor)}`;
   };
 
   const getEmbedCode = () => {
@@ -114,15 +116,58 @@ function App() {
       </div>
 
       <div className="container">
-        {/* Name Input */}
+        {/* Name and Customization */}
         <div className="section">
-          <label>Your Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-          />
+          <h3>Personalization</h3>
+          <div className="form-row">
+            <div className="form-col">
+              <label>Your Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+              />
+            </div>
+            <div className="form-col">
+              <label>Greeting Message:</label>
+              <input
+                type="text"
+                value={greeting}
+                onChange={(e) => setGreeting(e.target.value)}
+                placeholder="e.g., greets you with Namaste 🙏"
+              />
+            </div>
+          </div>
+          <div className="form-row" style={{ marginTop: '15px' }}>
+            <div className="form-col">
+              <label>Card Color Theme:</label>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <input
+                  type="color"
+                  value={cardColor}
+                  onChange={(e) => setCardColor(e.target.value)}
+                  style={{ width: '60px', height: '40px', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                />
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button className="color-preset" onClick={() => setCardColor('#FF8C42')} style={{ background: '#FF8C42' }} title="Orange">🔥</button>
+                  <button className="color-preset" onClick={() => setCardColor('#4A90E2')} style={{ background: '#4A90E2' }} title="Blue">💙</button>
+                  <button className="color-preset" onClick={() => setCardColor('#9B59B6')} style={{ background: '#9B59B6' }} title="Purple">💜</button>
+                  <button className="color-preset" onClick={() => setCardColor('#E74C3C')} style={{ background: '#E74C3C' }} title="Red">❤️</button>
+                  <button className="color-preset" onClick={() => setCardColor('#F39C12')} style={{ background: '#F39C12' }} title="Gold">⭐</button>
+                  <button className="color-preset" onClick={() => setCardColor('#2C3E50')} style={{ background: '#2C3E50' }} title="Dark Slate">🌑</button>
+                  <button className="color-preset" onClick={() => setCardColor('#16A085')} style={{ background: '#16A085' }} title="Teal">🌊</button>
+                  <button className="color-preset" onClick={() => setCardColor('#D35400')} style={{ background: '#D35400' }} title="Pumpkin">🎃</button>
+                  <button className="color-preset" onClick={() => setCardColor('#8E44AD')} style={{ background: '#8E44AD' }} title="Violet">🔮</button>
+                  <button className="color-preset" onClick={() => setCardColor('#C0392B')} style={{ background: '#C0392B' }} title="Crimson">💢</button>
+                  <button className="color-preset" onClick={() => setCardColor('#1A1A2E')} style={{ background: '#1A1A2E' }} title="Midnight Navy">🌃</button>
+                  <button className="color-preset" onClick={() => setCardColor('#2E86AB')} style={{ background: '#2E86AB' }} title="Steel Blue">🔷</button>
+                  <button className="color-preset" onClick={() => setCardColor('#3D5A80')} style={{ background: '#3D5A80' }} title="Ocean Blue">🌐</button>
+                  <button className="color-preset" onClick={() => setCardColor('#4A4E69')} style={{ background: '#4A4E69' }} title="Muted Slate">🪨</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Add Platform */}
@@ -152,7 +197,7 @@ function App() {
                   value={currentUsername}
                   onChange={(e) => setCurrentUsername(e.target.value)}
                   placeholder="Your username"
-                  onKeyPress={(e) => e.key === 'Enter' && addPlatform()}
+                  onKeyDown={(e) => e.key === 'Enter' && addPlatform()}
                 />
               </div>
             </div>
