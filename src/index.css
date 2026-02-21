@@ -371,3 +371,23 @@ textarea:focus {
 .github-btn span {
   font-size: 1rem;
 }
+
+.section ol {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.section ol li {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.section code {
+  background: #FFF9F0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #FF6B35;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  border: 1px solid #FFE4CC;
+}

@@ -71,8 +71,18 @@ function App() {
     return `/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}`;
   };
 
+  const getFullCardUrl = () => {
+    const encodedPlatforms = encodeURIComponent(JSON.stringify(selectedPlatforms));
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}`;
+  };
+
   const getEmbedCode = () => {
-    return `<img src="${getCardUrl()}" alt="Coding Streaks" />`;
+    return `![Coding Streaks](${getFullCardUrl()})`;
+  };
+
+  const getHtmlEmbedCode = () => {
+    return `<img src="${getFullCardUrl()}" alt="Coding Streaks" />`;
   };
 
   const getPlatformUrl = (platform, username) => {
@@ -217,7 +227,8 @@ function App() {
 
             {/* Embed Code */}
             <div className="section">
-              <h3>Embed Code</h3>
+              <h3>Embed Code for GitHub README</h3>
+              <p className="hint">📝 Markdown format (recommended for GitHub)</p>
               <textarea
                 readOnly
                 value={getEmbedCode()}
@@ -228,12 +239,45 @@ function App() {
                 className="copy-btn"
                 onClick={() => {
                   navigator.clipboard.writeText(getEmbedCode());
-                  alert('✓ Copied to clipboard!');
+                  alert('✓ Markdown code copied to clipboard!');
                 }}
               >
-                📋 Copy Embed Code
+                📋 Copy Markdown Code
+              </button>
+              
+              <p className="hint" style={{ marginTop: '20px' }}>🔧 HTML format (alternative)</p>
+              <textarea
+                readOnly
+                value={getHtmlEmbedCode()}
+                onClick={(e) => e.target.select()}
+                rows={3}
+              />
+              <button
+                className="copy-btn"
+                onClick={() => {
+                  navigator.clipboard.writeText(getHtmlEmbedCode());
+                  alert('✓ HTML code copied to clipboard!');
+                }}
+              >
+                📋 Copy HTML Code
               </button>
             </div>
+          </>
+        )}
+
+        {/* Instructions */}
+        {selectedPlatforms.length > 0 && (
+          <div className="section">
+            <h3>📖 How to Add to GitHub Profile</h3>
+            <ol style={{ textAlign: 'left', lineHeight: '1.8' }}>
+              <li>Copy the Markdown code above</li>
+              <li>Go to your GitHub profile repository (usually <code>username/username</code>)</li>
+              <li>Edit the <code>README.md</code> file</li>
+              <li>Paste the code where you want the card to appear</li>
+              <li>Commit the changes</li>
+              <li>Your streak card will appear on your profile! 🎉</li>
+            </ol>
+          </div>
           </>
         )}
       </div>
