@@ -278,7 +278,6 @@ function App() {
               <li>Your streak card will appear on your profile! 🎉</li>
             </ol>
           </div>
-          </>
         )}
       </div>
 
