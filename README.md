@@ -27,7 +27,7 @@ A beautiful, dynamic streak card generator that displays your coding streaks acr
 | Platform | Status | Data Source |
 |----------|--------|-------------|
 | GitHub | ✅ Real-time | [streak-stats.demolab.com](https://streak-stats.demolab.com) |
-| LeetCode | ✅ Real-time | [leetcode-stats.tashif.codes](https://leetcode-stats.tashif.codes) |
+| LeetCode | ✅ Real-time | [alfa-leetcode-api.onrender.com](https://alfa-leetcode-api.onrender.com) |
 | GeeksforGeeks | ✅ Real-time | [gfgstatscard.vercel.app](https://gfgstatscard.vercel.app) |
 | Unstop | ⚠️ Manual | Requires API endpoint |
 | Others | 📝 Manual | User-provided values |
