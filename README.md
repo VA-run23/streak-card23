@@ -153,9 +153,9 @@ This project uses the following third-party APIs to fetch real-time streak data:
 - **License**: MIT
 
 ### LeetCode Stats API
-- **API**: [leetcode-stats.tashif.codes](https://leetcode-stats.tashif.codes)
-- **Creator**: [Tashif Ahmed](https://github.com/khan-tashif)
-- **Repository**: [leetcode-stats-api](https://github.com/khan-tashif/leetcode-stats-api)
+- **API**: [alfa-leetcode-api.onrender.com](https://alfa-leetcode-api.onrender.com)
+- **Creator**: [Arghya Ghosh (alfaarghya)](https://github.com/alfaarghya)
+- **Repository**: [alfa-leetcode-api](https://github.com/alfaarghya/alfa-leetcode-api)
 - **Usage**: Fetches LeetCode submission statistics and calendar
 - **License**: MIT
 
@@ -235,7 +235,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [DenverCoder1](https://github.com/DenverCoder1) for GitHub Streak Stats API
-- [Tashif Ahmed](https://github.com/khan-tashif) for LeetCode Stats API
+- [Arghya Ghosh (alfaarghya)](https://github.com/alfaarghya) for alfa-leetcode-api
 - [Saurav Mukherjee](https://github.com/Saurav-98) for GeeksforGeeks Stats Card API
 - All contributors who help improve this project
 

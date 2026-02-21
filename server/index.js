@@ -18,7 +18,7 @@ async function getGitHubStreak(username) {
 
 async function getLeetCodePOTDStreak(username) {
   try {
-    const response = await axios.get(`https://leetcode-stats.tashif.codes/${username}`);
+    const response = await axios.get(`https://alfa-leetcode-api.onrender.com/${username}/calendar`);
     const submissionCalendar = response.data?.submissionCalendar;
     
     if (!submissionCalendar) return 0;
@@ -63,7 +63,7 @@ async function getLeetCodePOTDStreak(username) {
 
 async function getLeetCodeSubmissionStreak(username) {
   try {
-    const response = await axios.get(`https://leetcode-stats.tashif.codes/${username}`);
+    const response = await axios.get(`https://alfa-leetcode-api.onrender.com/${username}/calendar`);
     const submissionCalendar = response.data?.submissionCalendar;
     
     if (!submissionCalendar) return 0;
