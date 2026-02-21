@@ -1,0 +1,373 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: #FFF5EB;
+  color: #333;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.header {
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 50%, #FF6B35 100%);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.brand {
+  margin-bottom: 15px;
+}
+
+.brand h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.brand-subtitle {
+  font-size: 1rem;
+  opacity: 0.95;
+  margin: 5px 0;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #FFF5EB;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+.container {
+  max-width: 900px;
+  margin: -30px auto 0;
+  padding: 0 20px;
+}
+
+.section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.15);
+  border: 2px solid #FFE4CC;
+}
+
+.section h3 {
+  color: #FF6B35;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #FF8C42;
+}
+
+.section input[type="text"],
+.section input[type="number"],
+.section select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #FFD4A3;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.section input:focus,
+.section select:focus {
+  outline: none;
+  border-color: #FF8C42;
+}
+
+.add-platform-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-text {
+  color: #FF8C42;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #FFF9F0;
+  border-left: 3px solid #FFB347;
+  border-radius: 4px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-col label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #FF8C42;
+  font-size: 0.9rem;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.add-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.platform-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.chip-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.chip-link:hover {
+  opacity: 0.8;
+}
+
+.chip-username {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.chip-streak {
+  font-weight: 600;
+}
+
+.chip-badge {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.chip button {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.chip button:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.hint {
+  margin-top: 15px;
+  color: #FF8C42;
+  font-size: 0.9rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.preview {
+  text-align: center;
+  padding: 20px;
+  background: #FFF5EB;
+  border-radius: 12px;
+  border: 2px dashed #FFB347;
+}
+
+.preview img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #FFD4A3;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  background: #FFF9F0;
+  color: #333;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #FF8C42;
+}
+
+.copy-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.copy-btn:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-row {
+    flex-direction: column;
+  }
+  
+  .streak-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .github-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+}
+
+.streak-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFE4CC 100%);
+  border-radius: 12px;
+  border: 2px solid #FFB347;
+}
+
+.streak-stat {
+  text-align: center;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.1);
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FFB347 0%, #FF6B35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #FF8C42;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer {
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 40px;
+}
+
+.github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+}
+
+.github-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 140, 66, 0.4);
+}
+
+.github-btn .octicon {
+  fill: white;
+}
+
+.github-btn span {
+  font-size: 1rem;
+}
