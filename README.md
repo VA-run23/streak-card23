@@ -14,7 +14,8 @@ A beautiful, dynamic streak card generator that displays your coding streaks acr
 ## ✨ Features
 
 - 🎯 **Real-time Data Fetching** - Automatically fetches your actual streak data from platforms
-- 🎨 **Beautiful Design** - Gradient orange theme with smooth animations
+- 🎨 **Customizable Design** - Choose from multiple color themes or use custom colors
+- 🎭 **Personalization** - Customize your name and greeting message
 - 🔗 **Clickable Cards** - Each platform links to your profile for verification
 - 📊 **Multiple Platforms** - Support for GitHub, LeetCode, GeeksforGeeks, and more
 - 🚀 **Easy to Use** - Simple web interface to generate your card
@@ -68,12 +69,25 @@ npm run dev
 
 ### Web Interface
 
-1. Enter your name
-2. Select a platform from the dropdown
-3. Enter your username for that platform
-4. Click "Add Platform" - the streak will be fetched automatically
-5. Repeat for other platforms
-6. Copy the generated embed code
+1. **Personalize Your Card**
+   - Enter your name
+   - Customize your greeting message
+   - Choose a color theme (Orange, Blue, Purple, Red, Gold, or custom)
+
+2. **Add Platforms**
+   - Select a platform from the dropdown
+   - Enter your username for that platform
+   - Click "Add Platform" - the streak will be fetched automatically
+   - Repeat for other platforms
+
+3. **Generate & Embed**
+   - Preview your card in real-time
+   - Copy the Markdown or HTML embed code
+   - Add to your GitHub profile README
+
+### Live Demo
+
+Visit: **https://streak-card23.vercel.app**
 
 ### API Endpoints
 
@@ -100,25 +114,41 @@ curl http://localhost:5000/api/fetch-streak/github/VA-run23
 
 #### Generate Streak Card
 ```
-GET /api/streak-card?platforms=<encoded_json>&name=<your_name>
+GET /api/streak-card?platforms=<encoded_json>&name=<your_name>&greeting=<greeting>&color=<hex_color>
 ```
+
+**Parameters:**
+- `platforms` (required): URL-encoded JSON array of platform objects
+- `name` (optional): Your display name (default: "User")
+- `greeting` (optional): Custom greeting message (default: "greets you with Namaste 🙏")
+- `color` (optional): Hex color code for theme (default: "#FF8C42")
 
 **Example:**
 ```
-/api/streak-card?platforms=%5B%7B%22platform%22%3A%22github%22%2C%22username%22%3A%22VA-run23%22%2C%22streak%22%3A420%7D%5D&name=VARUN
+https://streak-card23.vercel.app/api/streak-card?platforms=%5B%7B%22platform%22%3A%22github%22%2C%22username%22%3A%22VA-run23%22%2C%22streak%22%3A420%7D%5D&name=VA-run23&greeting=Hello%20World&color=%234A90E2
 ```
 
 ## 🎨 Embedding Your Card
 
 ### Markdown (GitHub Profile)
 ```markdown
-![Coding Streaks](https://your-domain.vercel.app/api/streak-card?platforms=<encoded_data>&name=YourName)
+![Coding Streaks](https://streak-card23.vercel.app/api/streak-card?platforms=<encoded_data>&name=YourName&greeting=Your%20Greeting&color=%23FF8C42)
 ```
 
 ### HTML
 ```html
-<img src="https://your-domain.vercel.app/api/streak-card?platforms=<encoded_data>&name=YourName" alt="Coding Streaks" />
+<img src="https://streak-card23.vercel.app/api/streak-card?platforms=<encoded_data>&name=YourName&greeting=Your%20Greeting&color=%23FF8C42" alt="Coding Streaks" />
 ```
+
+### Color Options
+
+Choose from 5 preset colors or use any custom hex color:
+- 🔥 **Orange**: `#FF8C42` (default)
+- 💙 **Blue**: `#4A90E2`
+- 💜 **Purple**: `#9B59B6`
+- ❤️ **Red**: `#E74C3C`
+- ⭐ **Gold**: `#F39C12`
+- 🎨 **Custom**: Any hex color code (e.g., `#00FF00`, `#FF1493`)
 
 ## 🏗️ Project Structure
 
@@ -157,7 +187,7 @@ This project uses the following third-party APIs to fetch real-time streak data:
 - **Creator**: [Arghya Ghosh (alfaarghya)](https://github.com/alfaarghya)
 - **Repository**: [alfa-leetcode-api](https://github.com/alfaarghya/alfa-leetcode-api)
 - **Usage**: Fetches LeetCode submission statistics and calendar
-- **License**: MIT
+- **License**: CC0-1.0
 
 ### GeeksforGeeks Stats Card
 - **API**: [gfgstatscard.vercel.app](https://gfgstatscard.vercel.app)
