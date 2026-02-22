@@ -245,6 +245,10 @@ export default async function handler(req, res) {
     const username = platform.username || 'user';
     const url = getPlatformUrl(platform.platform, username);
     const platformName = platformNames[platform.platform] || platform.platform.toUpperCase();
+    
+    // Check if it's a LeetCode platform to show /365 limitation
+    const isLeetCode = ['leetcode', 'leetcode-potd', 'leetcode-submissions'].includes(platform.platform);
+    const streakText = isLeetCode ? `${streak}/365 days 🔥` : `${streak} days 🔥`;
 
     tabsHtml += `
       <a href="${url}" target="_blank" rel="noopener noreferrer">
@@ -254,7 +258,7 @@ export default async function handler(req, res) {
             ${platformName}
           </text>
           <text x="${x + 10}" y="${y + 36}" fill="white" font-size="18" font-weight="700">
-            ${streak} days 🔥
+            ${streakText}
           </text>
         </g>
       </a>

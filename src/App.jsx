@@ -242,6 +242,10 @@ function App() {
             <div className="platform-chips">
               {selectedPlatforms.map(p => {
                 const platform = platforms.find(pl => pl.value === p.platform);
+                // Check if it's a LeetCode platform to show /365 limitation
+                const isLeetCode = ['leetcode', 'leetcode-potd', 'leetcode-submissions'].includes(p.platform);
+                const streakText = isLeetCode ? `${p.streak}/365 days 🔥` : `${p.streak} days 🔥`;
+                
                 return (
                   <div key={p.platform} className="chip">
                     <a 
@@ -253,7 +257,7 @@ function App() {
                     >
                       <span>{platform?.icon} {platform?.label}</span>
                       <span className="chip-username">@{p.username}</span>
-                      <span className="chip-streak">{p.streak} days 🔥</span>
+                      <span className="chip-streak">{streakText}</span>
                       {p.source === 'api' && <span className="chip-badge">✓ Live</span>}
                     </a>
                     <button onClick={() => removePlatform(p.platform)}>×</button>
