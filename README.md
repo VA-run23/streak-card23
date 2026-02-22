@@ -34,11 +34,6 @@ A beautiful, dynamic streak card generator that displays your coding streaks acr
 
 ## 🚀 Quick Start
 
-**New to this project?**
-- 🚀 [Quick Deploy Guide](QUICK_DEPLOY.md) - Deploy in 5 minutes
-- ✅ [Deployment Checklist](DEPLOYMENT_CHECKLIST.md) - Step-by-step verification
-- 📖 [Full Deployment Guide](DEPLOYMENT.md) - Comprehensive documentation
-
 ### Local Development
 
 **Prerequisites**
@@ -290,3 +285,4 @@ Made with ❤️ by developers, for developers
 **Star ⭐ this repository if you find it helpful!**
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/VA-run23/streak-card23)
+
