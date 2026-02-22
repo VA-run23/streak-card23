@@ -69,12 +69,22 @@ function App() {
   };
 
   const getCardUrl = () => {
-    const encodedPlatforms = encodeURIComponent(JSON.stringify(selectedPlatforms));
+    // Only send platform and username, NOT the streak value
+    const platformsForCard = selectedPlatforms.map(p => ({
+      platform: p.platform,
+      username: p.username
+    }));
+    const encodedPlatforms = encodeURIComponent(JSON.stringify(platformsForCard));
     return `/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}&greeting=${encodeURIComponent(greeting)}&color=${encodeURIComponent(cardColor)}`;
   };
 
   const getFullCardUrl = () => {
-    const encodedPlatforms = encodeURIComponent(JSON.stringify(selectedPlatforms));
+    // Only send platform and username, NOT the streak value
+    const platformsForCard = selectedPlatforms.map(p => ({
+      platform: p.platform,
+      username: p.username
+    }));
+    const encodedPlatforms = encodeURIComponent(JSON.stringify(platformsForCard));
     const baseUrl = window.location.origin;
     return `${baseUrl}/api/streak-card?platforms=${encodedPlatforms}&name=${encodeURIComponent(name)}&greeting=${encodeURIComponent(greeting)}&color=${encodeURIComponent(cardColor)}`;
   };
