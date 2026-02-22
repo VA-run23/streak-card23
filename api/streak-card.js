@@ -1,3 +1,96 @@
+import axios from 'axios';
+
+// Fetch functions from fetch-streak.js
+async function getGitHubStreak(username) {
+  try {
+    const response = await axios.get(`https://streak-stats.demolab.com/?user=${username}&type=json`);
+    return response.data?.currentStreak?.length || 0;
+  } catch (error) {
+    console.error('GitHub fetch error:', error.message);
+    return 0;
+  }
+}
+
+async function getLeetCodePOTDStreak(username) {
+  try {
+    const response = await axios.get(`https://alfa-leetcode-api.onrender.com/${username}/calendar`);
+    const submissionCalendar = response.data?.submissionCalendar;
+    
+    if (!submissionCalendar) return 0;
+    
+    const timestamps = Object.keys(submissionCalendar).map(ts => parseInt(ts)).sort((a, b) => b - a);
+    if (timestamps.length === 0) return 0;
+    
+    const oneDaySeconds = 86400;
+    const todayStart = Math.floor(Date.now() / 1000 / oneDaySeconds) * oneDaySeconds;
+    
+    const uniqueDays = new Set();
+    timestamps.forEach(ts => {
+      const dayStart = Math.floor(ts / oneDaySeconds) * oneDaySeconds;
+      uniqueDays.add(dayStart);
+    });
+    
+    const sortedDays = Array.from(uniqueDays).sort((a, b) => b - a);
+    
+    let streakCount = 0;
+    let expectedDay = todayStart;
+    
+    for (let i = 0; i < sortedDays.length; i++) {
+      const currentDay = sortedDays[i];
+      
+      if (currentDay === expectedDay) {
+        streakCount++;
+        expectedDay -= oneDaySeconds;
+      } else if (currentDay === expectedDay + oneDaySeconds && streakCount === 0) {
+        streakCount++;
+        expectedDay = currentDay - oneDaySeconds;
+      } else {
+        break;
+      }
+    }
+    
+    return streakCount;
+  } catch (error) {
+    console.error('LeetCode POTD fetch error:', error.message);
+    return 0;
+  }
+}
+
+async function getGFGStreak(username) {
+  try {
+    const response = await axios.get(`https://gfgstatscard.vercel.app/${username}`);
+    
+    const streakPattern = /<text id="total-streak-text">(\d+)/;
+    const match = response.data.match(streakPattern);
+    
+    if (match && match[1]) {
+      return parseInt(match[1]);
+    }
+    
+    return 0;
+  } catch (error) {
+    console.error('GFG fetch error:', error.message);
+    return 0;
+  }
+}
+
+async function fetchStreakForPlatform(platform, username) {
+  switch(platform) {
+    case 'github':
+      return await getGitHubStreak(username);
+    case 'leetcode-potd':
+    case 'leetcode':
+      return await getLeetCodePOTDStreak(username);
+    case 'leetcode-submissions':
+      return await getLeetCodePOTDStreak(username);
+    case 'gfg':
+    case 'geeksforgeeks':
+      return await getGFGStreak(username);
+    default:
+      return 0;
+  }
+}
+
 // Get platform URL
 function getPlatformUrl(platform, username) {
   const urls = {
@@ -16,7 +109,7 @@ function getPlatformUrl(platform, username) {
   return urls[platform] || '#';
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { platforms, name = '', greeting = '', color = '#FF8C42' } = req.query;
   
   if (!platforms) {
@@ -24,6 +117,15 @@ export default function handler(req, res) {
   }
 
   const platformList = JSON.parse(decodeURIComponent(platforms));
+  
+  // Fetch live streak data for all platforms
+  const streakPromises = platformList.map(async (platform) => {
+    const username = platform.username || 'user';
+    const streak = await fetchStreakForPlatform(platform.platform, username);
+    return { ...platform, streak };
+  });
+  
+  const platformsWithStreaks = await Promise.all(streakPromises);
   
   const platformNames = {
     gfg: 'GFG',
@@ -74,16 +176,16 @@ export default function handler(req, res) {
   );
 
   // Dynamic width based on number of platforms
-  const tabsPerRow = Math.min(4, platformList.length);
+  const tabsPerRow = Math.min(4, platformsWithStreaks.length);
   const cardWidth = Math.max(300, 20 + (tabsPerRow * 140));
   const headerHeight = showHeader ? 100 : 0;
   const tabHeight = 55;
-  const rows = Math.ceil(platformList.length / tabsPerRow);
+  const rows = Math.ceil(platformsWithStreaks.length / tabsPerRow);
   const tabsHeight = rows * tabHeight + 20;
   const cardHeight = headerHeight + tabsHeight;
 
   let tabsHtml = '';
-  platformList.forEach((platform, index) => {
+  platformsWithStreaks.forEach((platform, index) => {
     const row = Math.floor(index / tabsPerRow);
     const col = index % tabsPerRow;
     const x = 20 + (col * 140);
