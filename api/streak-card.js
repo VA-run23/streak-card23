@@ -13,32 +13,47 @@ async function getGitHubStreak(username) {
 
 async function getLeetCodePOTDStreak(username) {
   try {
-    // Try primary API
-    let response;
-    try {
-      response = await axios.get(`https://alfa-leetcode-api.onrender.com/${username}/calendar`, {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0'
+    // Query LeetCode's GraphQL API directly
+    const query = `
+      query getUserProfile($username: String!) {
+        matchedUser(username: $username) {
+          submissionCalendar
         }
-      });
-    } catch (primaryError) {
-      console.log('Primary LeetCode API failed, trying alternative...');
-      // Try alternative endpoint
-      response = await axios.get(`https://leetcode-stats-api.herokuapp.com/${username}`, {
-        timeout: 10000
-      });
+      }
+    `;
+
+    const response = await axios.post('https://leetcode.com/graphql', {
+      query: query,
+      variables: { username: username }
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Referer': 'https://leetcode.com'
+      },
+      timeout: 10000
+    });
+
+    if (response.data.errors) {
+      console.error('LeetCode GraphQL errors:', response.data.errors);
+      return 0;
     }
-    
-    const submissionCalendar = response.data?.submissionCalendar;
-    
-    if (!submissionCalendar || Object.keys(submissionCalendar).length === 0) {
+
+    const submissionCalendar = response.data?.data?.matchedUser?.submissionCalendar;
+
+    if (!submissionCalendar) {
       console.log('No submission calendar data found');
       return 0;
     }
-    
+
+    // Parse the submission calendar JSON string
+    const calendar = JSON.parse(submissionCalendar);
+
+    if (!calendar || Object.keys(calendar).length === 0) {
+      return 0;
+    }
+
     // Convert timestamps to dates (UTC)
-    const submissions = Object.entries(submissionCalendar)
+    const submissions = Object.entries(calendar)
       .map(([timestamp, count]) => ({
         timestamp: parseInt(timestamp),
         count: parseInt(count),
@@ -46,9 +61,9 @@ async function getLeetCodePOTDStreak(username) {
       }))
       .filter(s => s.count > 0)
       .sort((a, b) => b.timestamp - a.timestamp);
-    
+
     if (submissions.length === 0) return 0;
-    
+
     // Get unique days (normalize to UTC midnight)
     const uniqueDays = new Set();
     submissions.forEach(sub => {
@@ -56,21 +71,21 @@ async function getLeetCodePOTDStreak(username) {
       const dayKey = `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`;
       uniqueDays.add(dayKey);
     });
-    
+
     // Convert back to sorted array of date strings
     const sortedDays = Array.from(uniqueDays).sort().reverse();
-    
+
     // Get today's date (UTC)
     const now = new Date();
     const today = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
     const yesterday = new Date(now);
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
     const yesterdayKey = `${yesterday.getUTCFullYear()}-${yesterday.getUTCMonth()}-${yesterday.getUTCDate()}`;
-    
+
     // Calculate streak
     let streakCount = 0;
     let currentCheckDate = new Date(now);
-    
+
     // Start from today or yesterday (grace period)
     if (sortedDays[0] === today) {
       streakCount = 1;
@@ -83,11 +98,11 @@ async function getLeetCodePOTDStreak(username) {
       // No recent activity
       return 0;
     }
-    
+
     // Count consecutive days backwards
     for (let i = 1; i < sortedDays.length; i++) {
       const expectedDay = `${currentCheckDate.getUTCFullYear()}-${currentCheckDate.getUTCMonth()}-${currentCheckDate.getUTCDate()}`;
-      
+
       if (sortedDays[i] === expectedDay) {
         streakCount++;
         currentCheckDate.setUTCDate(currentCheckDate.getUTCDate() - 1);
@@ -95,10 +110,10 @@ async function getLeetCodePOTDStreak(username) {
         break;
       }
     }
-    
+
     return streakCount;
   } catch (error) {
-    console.error('LeetCode POTD fetch error:', error.message);
+    console.error('LeetCode fetch error:', error.message);
     if (error.response) {
       console.error('Response status:', error.response.status);
       console.error('Response data:', error.response.data);
@@ -106,6 +121,7 @@ async function getLeetCodePOTDStreak(username) {
     return 0;
   }
 }
+
 
 async function getGFGStreak(username) {
   try {

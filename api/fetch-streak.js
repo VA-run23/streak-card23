@@ -125,6 +125,8 @@ async function getLeetCodeSubmissionStreak(username) {
       });
     }
     
+    https://leetcode-stats.tashif.codes/
+    
     const submissionCalendar = response.data?.submissionCalendar;
     
     if (!submissionCalendar || Object.keys(submissionCalendar).length === 0) {
