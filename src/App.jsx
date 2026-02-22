@@ -5,8 +5,7 @@ import './index.css';
 const platforms = [
   { value: 'gfg', label: 'GeeksforGeeks', icon: '🔥', hasApi: true, enabled: true },
   { value: 'github', label: 'GitHub', icon: '💻', hasApi: true, enabled: true },
-  { value: 'leetcode-potd', label: 'LeetCode (POTD)', icon: '🔥', hasApi: true, enabled: true },
-  { value: 'leetcode-submissions', label: 'LeetCode (Submissions)', icon: '💡', hasApi: true, enabled: true },
+  { value: 'leetcode', label: 'LeetCode', icon: '💡', hasApi: true, enabled: true },
   { value: 'unstop', label: 'Unstop', icon: '🚀', hasApi: false, enabled: false },
   { value: 'codechef', label: 'CodeChef', icon: '👨‍🍳', hasApi: false, enabled: false },
   { value: 'codeforces', label: 'Codeforces', icon: '🏆', hasApi: false, enabled: false },
@@ -102,8 +101,6 @@ function App() {
       gfg: `https://auth.geeksforgeeks.org/user/${username}`,
       weather: `#`,
       github: `https://github.com/${username}`,
-      'leetcode-potd': `https://leetcode.com/${username}`,
-      'leetcode-submissions': `https://leetcode.com/${username}`,
       leetcode: `https://leetcode.com/${username}`,
       unstop: `https://unstop.com/u/${username}`,
       microsoft: `https://rewards.microsoft.com/`,
@@ -242,8 +239,8 @@ function App() {
             <div className="platform-chips">
               {selectedPlatforms.map(p => {
                 const platform = platforms.find(pl => pl.value === p.platform);
-                // Check if it's a LeetCode platform to show /365 limitation
-                const isLeetCode = ['leetcode', 'leetcode-potd', 'leetcode-submissions'].includes(p.platform);
+                // Check if it's LeetCode platform to show /365 limitation
+                const isLeetCode = p.platform === 'leetcode';
                 const streakText = isLeetCode ? `${p.streak}/365 days 🔥` : `${p.streak} days 🔥`;
                 
                 return (

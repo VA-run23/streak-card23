@@ -41,7 +41,7 @@ async function getLeetCodePOTDStreak(username) {
     const submissionCalendar = response.data?.data?.matchedUser?.submissionCalendar;
 
     if (!submissionCalendar) {
-      console.log('No submission calendar data found');
+      console.log('No submission calendar data found for user:', username);
       return 0;
     }
 
@@ -49,64 +49,55 @@ async function getLeetCodePOTDStreak(username) {
     const calendar = JSON.parse(submissionCalendar);
 
     if (!calendar || Object.keys(calendar).length === 0) {
+      console.log('Empty calendar for user:', username);
       return 0;
     }
 
-    // Convert timestamps to dates (UTC)
-    const submissions = Object.entries(calendar)
-      .map(([timestamp, count]) => ({
-        timestamp: parseInt(timestamp),
-        count: parseInt(count),
-        date: new Date(parseInt(timestamp) * 1000)
-      }))
-      .filter(s => s.count > 0)
-      .sort((a, b) => b.timestamp - a.timestamp);
+    // Get all submission timestamps and sort them
+    const timestamps = Object.keys(calendar)
+      .map(ts => parseInt(ts))
+      .filter(ts => calendar[ts] > 0)
+      .sort((a, b) => b - a);
 
-    if (submissions.length === 0) return 0;
+    if (timestamps.length === 0) {
+      console.log('No submissions found for user:', username);
+      return 0;
+    }
 
-    // Get unique days (normalize to UTC midnight)
-    const uniqueDays = new Set();
-    submissions.forEach(sub => {
-      const date = new Date(sub.timestamp * 1000);
-      const dayKey = `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`;
-      uniqueDays.add(dayKey);
-    });
+    // Helper function to get day start timestamp (midnight UTC)
+    const getDayStart = (timestamp) => {
+      const date = new Date(timestamp * 1000);
+      return Math.floor(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) / 1000);
+    };
 
-    // Convert back to sorted array of date strings
-    const sortedDays = Array.from(uniqueDays).sort().reverse();
+    // Get unique days
+    const uniqueDays = [...new Set(timestamps.map(ts => getDayStart(ts)))].sort((a, b) => b - a);
 
-    // Get today's date (UTC)
+    // Get today's start timestamp
     const now = new Date();
-    const today = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-    const yesterday = new Date(now);
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    const yesterdayKey = `${yesterday.getUTCFullYear()}-${yesterday.getUTCMonth()}-${yesterday.getUTCDate()}`;
+    const todayStart = Math.floor(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) / 1000);
+    const oneDaySeconds = 86400;
 
-    // Calculate streak
+    // Check if streak is active (today or yesterday)
     let streakCount = 0;
-    let currentCheckDate = new Date(now);
+    let expectedDay = todayStart;
 
-    // Start from today or yesterday (grace period)
-    if (sortedDays[0] === today) {
-      streakCount = 1;
-      currentCheckDate.setUTCDate(currentCheckDate.getUTCDate() - 1);
-    } else if (sortedDays[0] === yesterdayKey) {
-      streakCount = 1;
-      currentCheckDate = new Date(yesterday);
-      currentCheckDate.setUTCDate(currentCheckDate.getUTCDate() - 1);
-    } else {
-      // No recent activity
-      return 0;
+    // If no submission today, check yesterday (grace period)
+    if (uniqueDays[0] < todayStart) {
+      expectedDay = todayStart - oneDaySeconds;
+      if (uniqueDays[0] < expectedDay) {
+        // Streak is broken
+        return 0;
+      }
     }
 
-    // Count consecutive days backwards
-    for (let i = 1; i < sortedDays.length; i++) {
-      const expectedDay = `${currentCheckDate.getUTCFullYear()}-${currentCheckDate.getUTCMonth()}-${currentCheckDate.getUTCDate()}`;
-
-      if (sortedDays[i] === expectedDay) {
+    // Count consecutive days
+    for (const day of uniqueDays) {
+      if (day === expectedDay) {
         streakCount++;
-        currentCheckDate.setUTCDate(currentCheckDate.getUTCDate() - 1);
-      } else {
+        expectedDay -= oneDaySeconds;
+      } else if (day < expectedDay) {
+        // Gap found, streak ends
         break;
       }
     }
@@ -116,7 +107,7 @@ async function getLeetCodePOTDStreak(username) {
     console.error('LeetCode fetch error:', error.message);
     if (error.response) {
       console.error('Response status:', error.response.status);
-      console.error('Response data:', error.response.data);
+      console.error('Response data:', JSON.stringify(error.response.data));
     }
     return 0;
   }
@@ -145,10 +136,7 @@ async function fetchStreakForPlatform(platform, username) {
   switch(platform) {
     case 'github':
       return await getGitHubStreak(username);
-    case 'leetcode-potd':
     case 'leetcode':
-      return await getLeetCodePOTDStreak(username);
-    case 'leetcode-submissions':
       return await getLeetCodePOTDStreak(username);
     case 'gfg':
     case 'geeksforgeeks':
@@ -199,8 +187,6 @@ export default async function handler(req, res) {
     weather: 'Weather',
     github: 'GitHub',
     leetcode: 'LeetCode',
-    'leetcode-potd': 'LeetCode POTD',
-    'leetcode-submissions': 'LeetCode',
     unstop: 'Unstop',
     microsoft: 'Microsoft',
     puzzles: 'Puzzles',
@@ -262,8 +248,8 @@ export default async function handler(req, res) {
     const url = getPlatformUrl(platform.platform, username);
     const platformName = platformNames[platform.platform] || platform.platform.toUpperCase();
     
-    // Check if it's a LeetCode platform to show /365 limitation
-    const isLeetCode = ['leetcode', 'leetcode-potd', 'leetcode-submissions'].includes(platform.platform);
+    // Check if it's LeetCode platform to show /365 limitation
+    const isLeetCode = platform.platform === 'leetcode';
     const streakText = isLeetCode ? `${streak}/365 days 🔥` : `${streak} days 🔥`;
 
     tabsHtml += `
