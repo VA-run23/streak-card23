@@ -1,4 +1,4 @@
-# 🔥 Coding Streak Card Generator
+# Coding Streak Card Generator
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/VA-run23/streak-card23)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,28 +11,38 @@ A beautiful, dynamic streak card generator that displays your coding streaks acr
 
 > **Quick Deploy**: Click the "Deploy with Vercel" button above or follow the [Quick Deploy Guide](QUICK_DEPLOY.md)
 
-## ✨ Features
+## Features
 
-- 🎯 **Real-time Data Fetching** - Automatically fetches your actual streak data from platforms
-- 🎨 **Customizable Design** - Choose from multiple color themes or use custom colors
-- 🎭 **Personalization** - Customize your name and greeting message
-- 🔗 **Clickable Cards** - Each platform links to your profile for verification
-- 📊 **Multiple Platforms** - Support for GitHub, LeetCode, GeeksforGeeks, and more
-- 🚀 **Easy to Use** - Simple web interface to generate your card
-- 📱 **Responsive** - Works on all devices
-- 🌐 **Embeddable** - Generate embed code for your GitHub profile or website
+- **Real-time Data Fetching** - Automatically fetches your actual streak data from platforms
+- **Customizable Design** - Choose from multiple color themes or use custom colors
+- **Personalization** - Customize your name and greeting message
+- **Clickable Cards** - Each platform links to your profile for verification
+- **Multiple Platforms** - Support for GitHub, LeetCode, GeeksforGeeks, and more
+- **Easy to Use** - Simple web interface to generate your card
+- **Responsive** - Works on all devices
+- **Embeddable** - Generate embed code for your GitHub profile or website
 
-## 🎯 Supported Platforms
+![Sample Streak Card](public/SampleImage.png)
 
-| Platform | Status | Data Source |
-|----------|--------|-------------|
-| GitHub | ✅ Real-time | [streak-stats.demolab.com](https://streak-stats.demolab.com) |
-| LeetCode | ✅ Real-time | [alfa-leetcode-api.onrender.com](https://alfa-leetcode-api.onrender.com) |
-| GeeksforGeeks | ✅ Real-time | [gfgstatscard.vercel.app](https://gfgstatscard.vercel.app) |
-| Unstop | ⚠️ Manual | Requires API endpoint |
-| Others | 📝 Manual | User-provided values |
+## Supported Platforms
 
-## 🚀 Quick Start
+Currently working APIs with real-time data fetching:
+
+| Platform | Status | API Endpoint | Data Fetched |
+|----------|--------|--------------|--------------|
+| **GitHub** | ✅ Live | [streak-stats.demolab.com](https://streak-stats.demolab.com) | Current contribution streak |
+| **LeetCode** | ✅ Live | [leetcode.com/graphql](https://leetcode.com/graphql) | Submission calendar & streak (max 365 days) |
+| **GeeksforGeeks** | ✅ Live | [gfgstatscard.vercel.app](https://gfgstatscard.vercel.app) | Problem-solving streak |
+
+Coming soon:
+| Platform | Status | Notes |
+|----------|--------|-------|
+| Unstop | 🔜 Planned | API integration in progress |
+| CodeChef | 🔜 Planned | Requires authentication |
+| Codeforces | 🔜 Planned | API available |
+| HackerRank | 🔜 Planned | API available |
+
+## Quick Start
 
 ### Local Development
 
@@ -60,7 +70,7 @@ npm run dev
 
 4. Open your browser and navigate to `http://localhost:3000`
 
-## 📖 Usage
+## Usage
 
 ### Web Interface
 
@@ -70,10 +80,12 @@ npm run dev
    - Choose a color theme (Orange, Blue, Purple, Red, Gold, or custom)
 
 2. **Add Platforms**
-   - Select a platform from the dropdown
+   - Select a platform from the dropdown (GitHub, LeetCode, or GeeksforGeeks)
    - Enter your username for that platform
-   - Click "Add Platform" - the streak will be fetched automatically
+   - Click "Add Platform" - the streak will be fetched automatically from the live API
    - Repeat for other platforms
+
+![Successful Fetch Example](public/FetchSuccessful.png)
 
 3. **Generate & Embed**
    - Preview your card in real-time
@@ -101,7 +113,7 @@ curl http://localhost:5000/api/fetch-streak/github/VA-run23
 {
   "platform": "github",
   "username": "VA-run23",
-  "streak": 420,
+  "streak": 500,
   "source": "api",
   "url": "https://github.com/VA-run23"
 }
@@ -120,10 +132,10 @@ GET /api/streak-card?platforms=<encoded_json>&name=<your_name>&greeting=<greetin
 
 **Example:**
 ```
-https://streak-card23.vercel.app/api/streak-card?platforms=%5B%7B%22platform%22%3A%22github%22%2C%22username%22%3A%22VA-run23%22%2C%22streak%22%3A420%7D%5D&name=VA-run23&greeting=Hello%20World&color=%234A90E2
+https://streak-card23.vercel.app/api/streak-card?platforms=%5B%7B%22platform%22%3A%22github%22%2C%22username%22%3A%22VA-run23%22%2C%22streak%22%3A500%7D%5D&name=VA-run23&greeting=Hello%20World&color=%234A90E2
 ```
 
-## 🎨 Embedding Your Card
+## Embedding Your Card
 
 ### Markdown (GitHub Profile)
 ```markdown
@@ -138,14 +150,14 @@ https://streak-card23.vercel.app/api/streak-card?platforms=%5B%7B%22platform%22%
 ### Color Options
 
 Choose from 5 preset colors or use any custom hex color:
-- 🔥 **Orange**: `#FF8C42` (default)
-- 💙 **Blue**: `#4A90E2`
-- 💜 **Purple**: `#9B59B6`
-- ❤️ **Red**: `#E74C3C`
-- ⭐ **Gold**: `#F39C12`
-- 🎨 **Custom**: Any hex color code (e.g., `#00FF00`, `#FF1493`)
+- **Orange**: `#FF8C42` (default)
+- **Blue**: `#4A90E2`
+- **Purple**: `#9B59B6`
+- **Red**: `#E74C3C`
+- **Gold**: `#F39C12`
+- **Custom**: Any hex color code (e.g., `#00FF00`, `#FF1493`)
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 coding-streak-card/
@@ -166,7 +178,7 @@ coding-streak-card/
 └── README.md                # This file
 ```
 
-## 🔌 Third-Party APIs & Credits
+## Third-Party APIs & Credits
 
 This project uses the following third-party APIs to fetch real-time streak data:
 
@@ -174,26 +186,28 @@ This project uses the following third-party APIs to fetch real-time streak data:
 - **API**: [streak-stats.demolab.com](https://streak-stats.demolab.com)
 - **Creator**: [DenverCoder1](https://github.com/DenverCoder1)
 - **Repository**: [github-readme-streak-stats](https://github.com/DenverCoder1/github-readme-streak-stats)
-- **Usage**: Fetches GitHub contribution streaks
+- **Usage**: Fetches GitHub contribution streaks via JSON endpoint
 - **License**: MIT
+- **Status**: ✅ Working
 
-### LeetCode Stats API
-- **API**: [alfa-leetcode-api.onrender.com](https://alfa-leetcode-api.onrender.com)
-- **Creator**: [Arghya Ghosh (alfaarghya)](https://github.com/alfaarghya)
-- **Repository**: [alfa-leetcode-api](https://github.com/alfaarghya/alfa-leetcode-api)
-- **Usage**: Fetches LeetCode submission statistics and calendar
-- **License**: CC0-1.0
+### LeetCode GraphQL API
+- **API**: [leetcode.com/graphql](https://leetcode.com/graphql)
+- **Official**: LeetCode's official GraphQL API
+- **Usage**: Fetches submission calendar and calculates current streak (max 365 days)
+- **Note**: Direct GraphQL queries to LeetCode's public API
+- **Status**: ✅ Working
 
 ### GeeksforGeeks Stats Card
 - **API**: [gfgstatscard.vercel.app](https://gfgstatscard.vercel.app)
 - **Creator**: [Saurav Mukherjee](https://github.com/Saurav-98)
 - **Repository**: [GeeksforGeeks-Stats-Card](https://github.com/Saurav-98/GeeksforGeeks-Stats-Card)
-- **Usage**: Fetches GeeksforGeeks problem-solving streaks
+- **Usage**: Fetches GeeksforGeeks problem-solving streaks via SVG parsing
 - **License**: MIT
+- **Status**: ✅ Working
 
-**Special Thanks** to all the creators of these amazing APIs for making their services publicly available! 🙏
+**Special Thanks** to all the creators of these amazing APIs for making their services publicly available!
 
-## 🛠️ Development
+## Development
 
 ### Local Development
 
@@ -212,7 +226,7 @@ This starts:
 npm run build
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Deploy to Vercel
 
@@ -232,14 +246,14 @@ vercel
 
 No environment variables required! All APIs are public.
 
-## 📝 API Rate Limits
+## API Rate Limits
 
 Be mindful of rate limits when using third-party APIs:
 - **GitHub Streak Stats**: No strict limits
 - **LeetCode Stats**: Reasonable use recommended
 - **GFG Stats Card**: Reasonable use recommended
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
@@ -253,25 +267,25 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on adding new platforms and features.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [DenverCoder1](https://github.com/DenverCoder1) for GitHub Streak Stats API
 - [Arghya Ghosh (alfaarghya)](https://github.com/alfaarghya) for alfa-leetcode-api
 - [Saurav Mukherjee](https://github.com/Saurav-98) for GeeksforGeeks Stats Card API
 - All contributors who help improve this project
 
-## 📧 Contact & Support
+## Contact & Support
 
-- 📖 [Documentation](DEPLOYMENT.md)
-- 🐛 [Report Issues](https://github.com/VA-run23/streak-card23/issues)
-- 💡 [Request Features](https://github.com/VA-run23/streak-card23/issues/new)
-- 🤝 [Contributing Guide](CONTRIBUTING.md)
+- Documentation: [DEPLOYMENT.md](DEPLOYMENT.md)
+- Report Issues: [GitHub Issues](https://github.com/VA-run23/streak-card23/issues)
+- Request Features: [New Issue](https://github.com/VA-run23/streak-card23/issues/new)
+- Contributing Guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## 📊 Project Stats
+## Project Stats
 
 ![GitHub stars](https://img.shields.io/github/stars/VA-run23/streak-card23?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/VA-run23/streak-card23?style=social)
@@ -280,9 +294,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+**Built by VA-run23 | NeuroBytes23**
+
 Made with ❤️ by developers, for developers
 
 **Star ⭐ this repository if you find it helpful!**
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/VA-run23/streak-card23)
-
