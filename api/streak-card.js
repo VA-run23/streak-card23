@@ -132,6 +132,88 @@ async function getGFGStreak(username) {
   }
 }
 
+async function getChessStreak(username) {
+  try {
+    const archivesRes = await axios.get(`https://api.chess.com/pub/player/${username}/games/archives`);
+    if (!archivesRes.data || !archivesRes.data.archives) return 0;
+
+    const archives = archivesRes.data.archives.reverse();
+
+    let streak = 0;
+    let expectedDate = new Date();
+    const toDateString = (date) => date.toISOString().split('T')[0];
+
+    let expectedDateStr = toDateString(expectedDate);
+    let isFirstDay = true;
+    let gapFound = false;
+
+    const chunkSize = 3;
+    for (let i = 0; i < archives.length; i += chunkSize) {
+      const chunk = archives.slice(i, i + chunkSize);
+
+      const responses = await Promise.all(
+        chunk.map(url => axios.get(url).catch(() => ({ data: { games: [] } })))
+      );
+
+      const playedDates = new Set();
+      responses.forEach(res => {
+        if (res.data && res.data.games) {
+          res.data.games.forEach(game => {
+            if (game.end_time) {
+              playedDates.add(toDateString(new Date(game.end_time * 1000)));
+            }
+          });
+        }
+      });
+
+      while (true) {
+        if (playedDates.has(expectedDateStr)) {
+          streak++;
+          expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+          expectedDateStr = toDateString(expectedDate);
+          isFirstDay = false;
+        } else {
+          if (isFirstDay) {
+            expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+            expectedDateStr = toDateString(expectedDate);
+            isFirstDay = false;
+            if (playedDates.has(expectedDateStr)) {
+              streak++;
+              expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+              expectedDateStr = toDateString(expectedDate);
+              continue;
+            }
+          }
+
+          const oldestUrl = chunk[chunk.length - 1];
+          const match = oldestUrl.match(/\/(\d{4})\/(\d{2})$/);
+          if (match) {
+            const oldestYear = parseInt(match[1]);
+            const oldestMonth = parseInt(match[2]) - 1;
+
+            const expectedYear = expectedDate.getUTCFullYear();
+            const expectedMonth = expectedDate.getUTCMonth();
+
+            if (expectedYear < oldestYear || (expectedYear === oldestYear && expectedMonth < oldestMonth)) {
+              break;
+            }
+          }
+
+          gapFound = true;
+          break;
+        }
+      }
+
+      if (gapFound) break;
+    }
+
+    return streak;
+  } catch (error) {
+    console.error('Chess.com API calculation error:', error.message);
+    return 0;
+  }
+}
+
 async function fetchStreakForPlatform(platform, username) {
   switch(platform) {
     case 'github':
@@ -141,6 +223,8 @@ async function fetchStreakForPlatform(platform, username) {
     case 'gfg':
     case 'geeksforgeeks':
       return await getGFGStreak(username);
+    case 'chess':
+      return await getChessStreak(username);
     default:
       return 0;
   }
@@ -155,6 +239,7 @@ function getPlatformUrl(platform, username) {
     leetcode: `https://leetcode.com/${username}`,
     unstop: `https://unstop.com/u/${username}`,
     microsoft: `https://rewards.microsoft.com/`,
+    chess: `https://www.chess.com/member/${username}`,
     puzzles: `https://www.chess.com/member/${username}`,
     codechef: `https://www.codechef.com/users/${username}`,
     codeforces: `https://codeforces.com/profile/${username}`,
@@ -189,6 +274,7 @@ export default async function handler(req, res) {
     leetcode: 'LeetCode',
     unstop: 'Unstop',
     microsoft: 'Microsoft',
+    chess: 'Chess.com',
     puzzles: 'Puzzles',
     codechef: 'CodeChef',
     codeforces: 'Codeforces',

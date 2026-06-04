@@ -141,6 +141,95 @@ async function getUnstopStreak(username) {
   return 0;
 }
 
+async function getChessStreak(username) {
+  try {
+    // Fetch the list of all monthly game archives
+    const archivesRes = await axios.get(`https://api.chess.com/pub/player/${username}/games/archives`);
+    if (!archivesRes.data || !archivesRes.data.archives) return 0;
+
+    const archives = archivesRes.data.archives.reverse(); // Newest months first
+
+    let streak = 0;
+    let expectedDate = new Date();
+    const toDateString = (date) => date.toISOString().split('T')[0];
+
+    let expectedDateStr = toDateString(expectedDate);
+    let isFirstDay = true;
+    let gapFound = false;
+
+    // Process 3 months at a time to stay fast
+    const chunkSize = 3;
+    for (let i = 0; i < archives.length; i += chunkSize) {
+      const chunk = archives.slice(i, i + chunkSize);
+
+      const responses = await Promise.all(
+        chunk.map(url => axios.get(url).catch(() => ({ data: { games: [] } })))
+      );
+
+      const playedDates = new Set();
+      responses.forEach(res => {
+        if (res.data && res.data.games) {
+          res.data.games.forEach(game => {
+            if (game.end_time) {
+              // Convert UNIX timestamp to YYYY-MM-DD
+              playedDates.add(toDateString(new Date(game.end_time * 1000)));
+            }
+          });
+        }
+      });
+
+      while (true) {
+        if (playedDates.has(expectedDateStr)) {
+          streak++;
+          expectedDate.setUTCDate(expectedDate.getUTCDate() - 1); // Move back 1 day
+          expectedDateStr = toDateString(expectedDate);
+          isFirstDay = false;
+        } else {
+          // If today is missing, they might not have played yet. Check yesterday.
+          if (isFirstDay) {
+            expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+            expectedDateStr = toDateString(expectedDate);
+            isFirstDay = false;
+            if (playedDates.has(expectedDateStr)) {
+              streak++;
+              expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+              expectedDateStr = toDateString(expectedDate);
+              continue;
+            }
+          }
+
+          // Verify if expectedDate belongs to a month we haven't fetched yet
+          const oldestUrl = chunk[chunk.length - 1]; // e.g. /2023/09
+          const match = oldestUrl.match(/\/(\d{4})\/(\d{2})$/);
+          if (match) {
+            const oldestYear = parseInt(match[1]);
+            const oldestMonth = parseInt(match[2]) - 1; // JS months are 0-indexed
+
+            const expectedYear = expectedDate.getUTCFullYear();
+            const expectedMonth = expectedDate.getUTCMonth();
+
+            // If expected date is older than the oldest month in this chunk, fetch next chunk
+            if (expectedYear < oldestYear || (expectedYear === oldestYear && expectedMonth < oldestMonth)) {
+              break; // Break inner while, continue outer for-loop
+            }
+          }
+
+          // Expected date is within the current chunk's range but missing. Streak broken!
+          gapFound = true;
+          break;
+        }
+      }
+
+      if (gapFound) break;
+    }
+
+    return streak;
+  } catch (error) {
+    console.error('Chess.com API calculation error:', error.message);
+    return 0;
+  }
+}
+
 function getPlatformUrl(platform, username) {
   const urlMap = {
     gfg: `https://auth.geeksforgeeks.org/user/${username}`,
@@ -150,6 +239,7 @@ function getPlatformUrl(platform, username) {
     leetcode: `https://leetcode.com/${username}`,
     unstop: `https://unstop.com/u/${username}`,
     microsoft: `https://rewards.microsoft.com/`,
+    chess: `https://www.chess.com/member/${username}`,
     puzzles: `https://www.chess.com/member/${username}`,
     codechef: `https://www.codechef.com/users/${username}`,
     codeforces: `https://codeforces.com/profile/${username}`,
@@ -198,6 +288,10 @@ export default async function handler(req, res) {
       case 'gfg':
       case 'geeksforgeeks':
         streakCount = await getGFGStreak(username);
+        dataSource = 'api';
+        break;
+      case 'chess':
+        streakCount = await getChessStreak(username);
         dataSource = 'api';
         break;
       case 'unstop':
