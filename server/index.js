@@ -324,7 +324,7 @@ app.get('/api/streak-card', (req, res) => {
   `;
   
   res.setHeader('Content-Type', 'image/svg+xml');
-  res.setHeader('Cache-Control', 'public, max-age=1800');
+  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600');
   res.send(svgContent);
 });
 
